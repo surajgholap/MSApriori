@@ -1,12 +1,13 @@
 import argparse
 import re
-import itertools
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('filename')
 parser.add_argument('parameter')
 parser.add_argument('output')
 args = parser.parse_args()
+
 
 def cand2gen(L, SDC_val):
     C = []
@@ -18,6 +19,7 @@ def cand2gen(L, SDC_val):
                     C.append([item, L[j]])
     return C
 
+
 def subsets(itemset):
     subset = []
     for i in itemset:
@@ -26,6 +28,8 @@ def subsets(itemset):
         j = itemset[:p]+itemset[p+1:]
         subset.append(j)
     return subset
+
+
 def candngen(F, SDC_val):
     Ck = []
     for i, item in enumerate(F):
@@ -38,57 +42,59 @@ def candngen(F, SDC_val):
                     C.append(initem[-1])
                     # print(C)
                     Ck.append(C)
-                    
+
     for item in Ck:
             c = Ck.index(item)
             subset = []
             subset = subsets(item)
             for j in subset:
-                if item[0] in j or MS_val[item[0]]==MS_val[item[1]]:
+                if item[0] in j or MS_val[item[0]] == MS_val[item[1]]:
                     if j not in F:
                         del Ck[c]
-                        break   
+                        break
     return Ck
+
 
 def with_conditions(F, must_have, cant_be):
     F1 = {}
     for k in F:
         F1[k] = []
         for f in F[k]:
-            delete = False
+            flag = False
             if set(f).intersection(set(must_have)):
                 for c in cant_be:
                     if set(c).issubset(set(f)):
-                        delete = True
+                        flag = True
                         break
-                if not delete:
+                if not flag:
                     F1[k].append(f)
     return F1
 
+
 def print_in_format(F):
-    with open(args.output, 'w+') as o:
+    with open(args.output, 'w+') as output:
         for item in F:
-            o.write('Frequent ' + str(item) + '-itemsets\n')
+            output.write('Frequent ' + str(item) + '-itemsets\n')
             for initem in F[item]:
                 if item == 1:
-                    o.write('\n    ' + str(count_sup[initem[0]]) + ' : {' + ','.join(set(initem)) + '}')
+                    output.write('\n    ' + str(count_sup[initem[0]]) + ' : {' + ','.join(set(initem)) + '}')
                 else:
                     tail_count = 0
                     for c in cand[item]:
                         if set(c) == set(initem):
-                            count = count_sup.get(tuple(c))
+                            tup_count = count_sup.get(tuple(c))
                     if item == 2:
                         tail_count = count_sup[initem[item-1]]
                     else:
                         for c in cand[item-1]:
                             if set(c) == set(initem[1:]):
                                 tail_count = count_sup.get(tuple(c))
-                    o.write("\n    " + str(count) + " : " + '{' + ', '.join(initem) + '}')
-                    o.write("\nTailcount = " + str(tail_count))
-            o.write("\n\n    Total number of frequent "+ str(item) + "-itemsets = " + str(len(F[item])) + "\n\n\n")
+                    output.write("\n    " + str(tup_count) + " : " + '{' + ', '.join(initem) + '}')
+                    output.write("\nTailcount = " + str(tail_count))
+            output.write("\n\n    Total number of frequent "+ str(item) + "-itemsets = " + str(len(F[item])) + "\n\n\n")
+
 
 def filehandler():
-
     with open(args.filename) as f:
         inp = f.readlines()
         f.close()
@@ -104,20 +110,20 @@ def filehandler():
     must_have = []
     for line in para:
         if line.startswith('MIS'):
-            MS_pat = re.search(r'.*\((\w*)\) = (\d*\.\d*)', line)
+            MS_pat = re.search(r".*\((\w*)\) = (\d*\.\d*)", line)
             MS_val[MS_pat.group(1)] = MS_pat.group(2)
         elif line.startswith('SDC'):
-            SDC_pat = re.findall(r'\d\.\d', line)
+            SDC_pat = re.findall(r"\d\.\d", line)
             SDC_val = float(SDC_pat[0])
         elif line.startswith('can'):
-            group = re.findall("{(\d+(,*\s*\d+)*)}", line)
-            for g in group:
-                items = re.findall(r"\d+", g[0])
+            cant_pat = re.findall(r"{(\d+(, \d+)*)}", line)
+            # print(cant_pat)
+            for x in cant_pat:
+                items = re.findall(r"\d+", x[0])
                 items = [str(i) for i in items]
                 cant_be.append(items)
         elif line.startswith('must'):
             must_have = re.findall(r'\d+', line)
-         
     return transac, MS_val, SDC_val, cant_be, must_have
 
 count_sup = {}     # dict to calculate support count of each item
@@ -174,7 +180,7 @@ while k >= 2:
                 else:
                     count_sup[tuple(i)] = count_sup.get(tuple(i)) + 1
     for i in cand[k]:
-        if(count_sup.get(tuple(i)) is not None):
+        if count_sup.get(tuple(i)) is not None:
             if count_sup.get(tuple(i))/n >= float(MS_val[i[0]]):
                 F.append(i)
     Freq[k] = F
