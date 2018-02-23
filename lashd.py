@@ -142,7 +142,7 @@ transac = [x.replace("{", "").replace("}", "").replace(" ", "") for x in transac
 for item in transac:
     translist.append(item.split(","))
 
-# calsulating support of all items
+# calculating support of all items
 for item in translist:
     for minitem in item:
         count_sup[minitem] = count_sup.get(minitem, 0) + 1
