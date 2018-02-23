@@ -105,7 +105,7 @@ def with_conditions(F, must_have, cant_be):
 
 
 # print results
-def print_in_format(F):
+def printing(F):
     with open(args.output, 'w+') as output:
         for item in F:
             output.write('Frequent ' + str(item) + '-itemsets\n')
@@ -191,4 +191,4 @@ while k >= 2:
 
 
 Fb = with_conditions(Freq, must_have, cant_be)
-print_in_format(Fb)
+printing(Fb)
