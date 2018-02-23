@@ -91,7 +91,7 @@ def print_in_format(F):
                                 tail_count = count_sup.get(tuple(c))
                     output.write("\n    " + str(tup_count) + " : " + '{' + ', '.join(initem) + '}')
                     output.write("\nTailcount = " + str(tail_count))
-            output.write("\n\n    Total number of frequent "+ str(item) + "-itemsets = " + str(len(F[item])) + "\n\n\n")
+            output.write("\n\n    Total number of frequent " + str(item) + "-itemsets = " + str(len(F[item])) + "\n\n\n")
 
 
 def filehandler():
