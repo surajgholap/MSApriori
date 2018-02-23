@@ -9,7 +9,7 @@ usage: test.py [INPUT] [PARAMETER] [OUTPUT]
 For example you could use the following: python3 lashd.py input.txt parameter-file.txt output.txt
 
 The output is of the form:
-  3 : {30, 80}
+  3 : {70, 10}
 Tailcount = 6
  
 3 is the frequency count of the pattern {70, 10} in the data. Tailcount is the frequency count of the tail of the pattern, {10}.
